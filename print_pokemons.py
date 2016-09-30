@@ -9,9 +9,12 @@ from pogo.pokedex import pokedex
 def main():
 
     parser = argparse.ArgumentParser(description='Print your pokemon go list.')
-    parser.add_argument('--keyfile', action='store', dest='keyfile', default='keyfile')
-    parser.add_argument('--family', action='append', dest='families', default=[])
-    parser.add_argument('--pokemon', action='append', dest='pokemons', default=[])
+    parser.add_argument('--keyfile', action='store', dest='keyfile',
+                        default='keyfile')
+    parser.add_argument('--family', action='append', dest='families',
+                        default=[])
+    parser.add_argument('--pokemon', action='append', dest='pokemons',
+                        default=[])
 
     args = parser.parse_args()
 
@@ -43,8 +46,10 @@ def print_pokemons_by_iv(lst, pokemons=[], families=[], segments=(90, 82, 0)):
     lst.reverse()
     
     sep = '-'*(110)
-    print('{:>15} | {:>4} | {:>4} | {:>8} | {:>8} | {:>8} | {:>8} | {:>8} | {:>8} | {}'.format(
-        'name', 'cp', 'hp', 'attack', 'defense', 'stamina', '%', 'candies', 'n_evolves', 'family'))
+    print('{:>3} | {:>15} | {:>4} | {:>4} | {:>8} | {:>8} | {:>8} | {:>8} | '
+          '{:>8} | {:>8} | {}'.format('id', 'name', 'cp', 'hp', 'attack',
+                                      'defense', 'stamina', '%', 'candies',
+                                      'n_evolves', 'family'))
     print(sep)
     
     curr_segment = 0
@@ -58,7 +63,9 @@ def print_pokemons_by_iv(lst, pokemons=[], families=[], segments=(90, 82, 0)):
             print(sep)
             curr_segment += 1
             counter = 1
-        print('{name:>15} | {cp:>4} | {hp:>4} | {attack:>8} | {defense:>8} | {stamina:>8} | {%:>8.3f} | {candies:>8} | {n_evolves:>8} | {family}'.format(**p))
+        print('{id:>3} | {name:>15} | {cp:>4} | {hp:>4} | {attack:>8} | '
+              '{defense:>8} | {stamina:>8} | {%:>8.3f} | {candies:>8} | '
+              '{n_evolves:>8} | {family}'.format(**p))
 
     print('Sub total: {}'.format(counter))
     print('Pokemons Total: {}'.format(len(lst)))
@@ -72,7 +79,8 @@ def get_credentials_from_keyfile(keyfile):
 
 
 def get_trainer(username, password):
-    auth_session = PokeAuthSession(username, password, 'google', 'libencrypt.so',geo_key=None)
+    auth_session = PokeAuthSession(username, password, 'google',
+                                   'libencrypt.so', geo_key=None)
     session = auth_session.authenticate()
     return Trainer(auth_session, session)
 
@@ -86,16 +94,21 @@ def get_pokemons(trainer):
         candies = inventory.candies.get(pokedex.families[p.pokemon_id], 0)
         evolves = pokedex.evolves[p.pokemon_id]
         n_evolves = 0
+        iv_percent = ( 
+            (p.individual_attack + 
+             p.individual_defense + 
+             p.individual_stamina) / 45 * 100)
         if evolves:
             n_evolves = int(candies / pokedex.evolves[p.pokemon_id])
         d = {
+            'id': p.pokemon_id,
             'name': pokedex[p.pokemon_id],
             'cp': p.cp, 
             'hp': p.stamina, 
             'attack': p.individual_attack, 
             'defense': p.individual_defense, 
             'stamina': p.individual_stamina,
-            '%': (p.individual_attack + p.individual_defense + p.individual_stamina) / 45 * 100,
+            '%': iv_percent,
             'family': pokedex[pokedex.families[p.pokemon_id]],
             'candies': candies,
             'evolves': evolves,
