@@ -46,7 +46,7 @@ def print_pokemons_by_iv(lst, pokemons=[], families=[], segments=(90, 82, 0)):
     lst.reverse()
     
     sep = '-'*(110)
-    print('{:>3} | {:>15} | {:>4} | {:>4} | {:>8} | {:>8} | {:>8} | {:>8} | '
+    print('{:>3} | {:>15} | {:>4} | {:>4} | {:>8} | {:>8} | {:>8} | {:>7} | '
           '{:>8} | {:>8} | {}'.format('id', 'name', 'cp', 'hp', 'attack',
                                       'defense', 'stamina', '%', 'candies',
                                       'n_evolves', 'family'))
@@ -64,7 +64,7 @@ def print_pokemons_by_iv(lst, pokemons=[], families=[], segments=(90, 82, 0)):
             curr_segment += 1
             counter = 1
         print('{id:>3} | {name:>15} | {cp:>4} | {hp:>4} | {attack:>8} | '
-              '{defense:>8} | {stamina:>8} | {%:>8.3f} | {candies:>8} | '
+              '{defense:>8} | {stamina:>8} | {%:>7.2f} | {candies:>8} | '
               '{n_evolves:>8} | {family}'.format(**p))
 
     print('Sub total: {}'.format(counter))
@@ -91,15 +91,16 @@ def get_pokemons(trainer):
     lst = []
 
     for p in inventory.party:
-        candies = inventory.candies.get(pokedex.families[p.pokemon_id], 0)
-        evolves = pokedex.evolves[p.pokemon_id]
-        n_evolves = 0
+        family = pokedex.families[p.pokemon_id]
+        n_candies = inventory.candies.get(family, 0)
+        need = pokedex.evolves.get(family, 0)
         iv_percent = ( 
             (p.individual_attack + 
              p.individual_defense + 
              p.individual_stamina) / 45 * 100)
-        if evolves:
-            n_evolves = int(candies / pokedex.evolves[p.pokemon_id])
+        n_evolves = 0
+        if need:
+            n_evolves = int(n_candies / need)
         d = {
             'id': p.pokemon_id,
             'name': pokedex[p.pokemon_id],
@@ -110,8 +111,8 @@ def get_pokemons(trainer):
             'stamina': p.individual_stamina,
             '%': iv_percent,
             'family': pokedex[pokedex.families[p.pokemon_id]],
-            'candies': candies,
-            'evolves': evolves,
+            'candies': n_candies,
+            'need': need,
             'n_evolves': n_evolves,
         }
         lst.append(d)
