@@ -92,8 +92,8 @@ def get_pokemons(trainer):
 
     for p in inventory.party:
         family = pokedex.families[p.pokemon_id]
-        n_candies = inventory.candies.get(family, 0)
-        need = pokedex.evolves.get(family, 0)
+        n_candies = inventory.candies.get(p.pokemon_id, 0)
+        need = pokedex.evolves.get(p.pokemon_id, 0)
         iv_percent = ( 
             (p.individual_attack + 
              p.individual_defense + 
@@ -110,7 +110,7 @@ def get_pokemons(trainer):
             'defense': p.individual_defense, 
             'stamina': p.individual_stamina,
             '%': iv_percent,
-            'family': pokedex[pokedex.families[p.pokemon_id]],
+            'family': pokedex[family],
             'candies': n_candies,
             'need': need,
             'n_evolves': n_evolves,
