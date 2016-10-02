@@ -81,14 +81,13 @@ def print_pokemons_by_iv(lst, pokemons=[], families=[], segments=(90, 82, 0)):
     print('Pokemons Total: {}'.format(len(lst)))
 
 
-def print_pokemons_by_number(lst, segments=(90, 82, 0)):
+def print_pokemons_by_number(lst):
     lst.sort(key=lambda x: (x['id'],x['%'], x['cp']))
 
     sep = '-'*(110)
     print('{:>3} | {:>15} | {:>4} | {:>4} | {:>8} | {:>8} | {:>8} | {:>8} | {:>8} | {:>8} | {}'.format(
         'id', 'name', 'cp', 'hp', 'attack', 'defense', 'stamina', '%', 'candies', 'n_evolves', 'family'))
     print(sep)
- 
 
     curr_family = ''
     counter = 0
