@@ -100,7 +100,7 @@ def print_pokemons_by_number(lst):
             curr_family=p['family']
             print('')
 
-        print('{id:>3} |{name:>15} | {cp:>4} | {hp:>4} | {attack:>8} | {defense:>8} | {stamina:>8} | {%:>8.3f} | {candies:>8} | {n_evolves:>8} | {family}'.format(**p))
+        print('{id:>3} | {name:>15} | {cp:>4} | {hp:>4} | {attack:>8} | {defense:>8} | {stamina:>8} | {%:>8.3f} | {candies:>8} | {n_evolves:>8} | {family}'.format(**p))
 
     print('Sub total: {}'.format(counter))
     print('Pokemons Total: {}'.format(len(lst)))
