@@ -32,9 +32,9 @@ def main():
         print("keyfile not found")
         return
 
-    username, password = get_credentials_from_keyfile(args.keyfile)
+    username, password, auth_type = get_credentials_from_keyfile(args.keyfile)
 
-    trainer = get_trainer(username, password)
+    trainer = get_trainer(username, password, auth_type)
 
     lst = get_pokemons(trainer)
 
@@ -107,14 +107,23 @@ def print_pokemons_by_number(lst):
 
 
 def get_credentials_from_keyfile(keyfile):
+    username = ''
+    password = ''
+    auth_type = 'google'
     with open(keyfile) as fh:
         line = fh.readline().strip()
-        username, password = line.split('|')
-    return (username, password)
+        credentials = line.split('|')
+        if len(credentials) == 2:
+            username, password = credentials
+        elif len(credentials) == 3:
+            username, password, auth_type = credentials
+        else:
+            raise ValueError('Invalid keyfile')
+    return (username, password, auth_type)
 
 
-def get_trainer(username, password):
-    auth_session = PokeAuthSession(username, password, 'google',
+def get_trainer(username, password, auth_type='google'):
+    auth_session = PokeAuthSession(username, password, auth_type,
                                    'libencrypt.so', geo_key=None)
     session = auth_session.authenticate()
     return Trainer(auth_session, session)
